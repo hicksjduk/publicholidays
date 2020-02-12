@@ -11,32 +11,22 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+/**
+ * A utility class that calculates public holidays in England and Wales for any given year. It follows the rules that
+ * have been in force since the last change to the law, in 1978, and also reflects the exceptional holidays that have
+ * been granted or moved for various events.
+ * 
+ * @author Jeremy Hicks
+ */
 public class EnglandAndWalesPublicHolidayCalculator
 {
-    private static final List<Exceptional> exceptions = Arrays
-            .asList(new Exceptional(1973, Month.NOVEMBER, 14, true),
-                    new Exceptional(1977, Month.JUNE, 7, true),
-                    new Exceptional(1981, Month.JULY, 29, true),
-                    new Exceptional(1999, Month.DECEMBER, 31, true),
-                    new Exceptional(instanceOfDayInMonth(-1, DayOfWeek.MONDAY, Month.MAY, 2002),
-                            false),
-                    new Exceptional(2002, Month.JUNE, 3, true),
-                    new Exceptional(2002, Month.JUNE, 4, true),
-                    new Exceptional(2011, Month.APRIL, 29, true),
-                    new Exceptional(instanceOfDayInMonth(1, DayOfWeek.MONDAY, Month.MAY, 2020),
-                            false),
-                    new Exceptional(2020, Month.MAY, 8, true));
-
-    static LocalDate[] exceptions(int year, boolean isHoliday)
-    {
-        return exceptions
-                .stream()
-                .filter(x -> x.isHoliday == isHoliday)
-                .map(x -> x.date)
-                .filter(d -> d.getYear() == year)
-                .toArray(LocalDate[]::new);
-    }
-
+    /**
+     * Returns a sorted stream of the public holidays in England and Wales for the specified year.
+     * 
+     * @param year
+     *            the year.
+     * @return the public holidays.
+     */
     public Stream<LocalDate> getPublicHolidays(int year)
     {
         LocalDate easterDay = dateOfEaster(year);
@@ -57,6 +47,31 @@ public class EnglandAndWalesPublicHolidayCalculator
     {
         List<LocalDate> exclusions = Arrays.asList(exceptions(year, false));
         return d -> !exclusions.contains(d);
+    }
+
+    private static final List<Exceptional> exceptions = Arrays
+            .asList(new Exceptional(1981, Month.JULY, 29, true),
+                    new Exceptional(instanceOfDayInMonth(1, DayOfWeek.MONDAY, Month.MAY, 1995),
+                            false),
+                    new Exceptional(1995, Month.MAY, 8, true),
+                    new Exceptional(1999, Month.DECEMBER, 31, true),
+                    new Exceptional(instanceOfDayInMonth(-1, DayOfWeek.MONDAY, Month.MAY, 2002),
+                            false),
+                    new Exceptional(2002, Month.JUNE, 3, true),
+                    new Exceptional(2002, Month.JUNE, 4, true),
+                    new Exceptional(2011, Month.APRIL, 29, true),
+                    new Exceptional(instanceOfDayInMonth(1, DayOfWeek.MONDAY, Month.MAY, 2020),
+                            false),
+                    new Exceptional(2020, Month.MAY, 8, true));
+
+    static LocalDate[] exceptions(int year, boolean isHoliday)
+    {
+        return exceptions
+                .stream()
+                .filter(x -> x.isHoliday == isHoliday)
+                .map(x -> x.date)
+                .filter(d -> d.getYear() == year)
+                .toArray(LocalDate[]::new);
     }
 
     static LocalDate weekdayOnOrAfter(int no, int day, Month month, int year)
