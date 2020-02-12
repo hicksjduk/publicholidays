@@ -36,7 +36,9 @@ public class EnglandAndWalesPublicHolidayCalculatorTest
     static Stream<Arguments> testGetPublicHolidays()
     {
         return Stream
-                .of(expectedHolidays(2002, "1/1", "29/3", "1/4", "6/5", "3/6", "4/6", "26/8",
+                .of(expectedHolidays(1995, "2/1", "14/4", "17/4", "8/5", "29/5", "28/8",
+                        "25/12", "26/12"),
+                        expectedHolidays(2002, "1/1", "29/3", "1/4", "6/5", "3/6", "4/6", "26/8",
                         "25/12", "26/12"),
                         expectedHolidays(2020, "1/1", "10/4", "13/4", "8/5", "25/5", "31/8",
                                 "25/12", "28/12"),
