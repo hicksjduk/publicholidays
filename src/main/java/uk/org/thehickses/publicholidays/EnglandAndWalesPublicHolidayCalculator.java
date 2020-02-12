@@ -38,9 +38,9 @@ public class EnglandAndWalesPublicHolidayCalculator
                         instanceOfDayInMonth(-1, DayOfWeek.MONDAY, Month.AUGUST, year),
                         weekdayOnOrAfter(1, 25, Month.DECEMBER, year),
                         weekdayOnOrAfter(2, 25, Month.DECEMBER, year));
+        Stream<LocalDate> additionalHolidays = Stream.of(exceptions(year, true));
         return Stream
-                .concat(standardHolidays
-                        .filter(isNotExcluded(year)), Stream.of(exceptions(year, true)))
+                .concat(standardHolidays.filter(isNotExcluded(year)), additionalHolidays)
                 .sorted();
     }
 
