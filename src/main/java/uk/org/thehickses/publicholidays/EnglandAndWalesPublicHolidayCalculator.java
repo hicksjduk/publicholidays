@@ -30,15 +30,16 @@ public class EnglandAndWalesPublicHolidayCalculator
     public Stream<LocalDate> getPublicHolidays(int year)
     {
         LocalDate easterDay = dateOfEaster(year);
+        Stream<LocalDate> standardHolidays = Stream
+                .of(weekdayOnOrAfter(1, 1, Month.JANUARY, year), easterDay.minusDays(2),
+                        easterDay.plusDays(1),
+                        instanceOfDayInMonth(1, DayOfWeek.MONDAY, Month.MAY, year),
+                        instanceOfDayInMonth(-1, DayOfWeek.MONDAY, Month.MAY, year),
+                        instanceOfDayInMonth(-1, DayOfWeek.MONDAY, Month.AUGUST, year),
+                        weekdayOnOrAfter(1, 25, Month.DECEMBER, year),
+                        weekdayOnOrAfter(2, 25, Month.DECEMBER, year));
         return Stream
-                .concat(Stream
-                        .of(weekdayOnOrAfter(1, 1, Month.JANUARY, year), easterDay.minusDays(2),
-                                easterDay.plusDays(1),
-                                instanceOfDayInMonth(1, DayOfWeek.MONDAY, Month.MAY, year),
-                                instanceOfDayInMonth(-1, DayOfWeek.MONDAY, Month.MAY, year),
-                                instanceOfDayInMonth(-1, DayOfWeek.MONDAY, Month.AUGUST, year),
-                                weekdayOnOrAfter(1, 25, Month.DECEMBER, year),
-                                weekdayOnOrAfter(2, 25, Month.DECEMBER, year))
+                .concat(standardHolidays
                         .filter(isNotExcluded(year)), Stream.of(exceptions(year, true)))
                 .sorted();
     }
