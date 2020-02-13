@@ -3,7 +3,9 @@ package uk.org.thehickses.publicholidays;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.*;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +17,39 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public class EnglandAndWalesPublicHolidayCalculatorTest
 {
+    @ParameterizedTest
+    @MethodSource
+    void testInstanceOfDayInMonth(int year, Month month, DayOfWeek day, int no,
+            LocalDate expectedResult)
+    {
+        LocalDate result = EnglandAndWalesPublicHolidayCalculator
+                .instanceOfDayInMonth(no, day, month, year);
+        assertThat(result).isEqualTo(expectedResult);
+    }
+
+    static Stream<Arguments> testInstanceOfDayInMonth()
+    {
+        return Stream
+                .of(arguments(2020, Month.JANUARY, DayOfWeek.WEDNESDAY, 1,
+                        LocalDate.of(2020, Month.JANUARY, 1)),
+                        arguments(2020, Month.JANUARY, DayOfWeek.WEDNESDAY, 3,
+                                LocalDate.of(2020, Month.JANUARY, 15)),
+                        arguments(2020, Month.JANUARY, DayOfWeek.FRIDAY, 1,
+                                LocalDate.of(2020, Month.JANUARY, 3)),
+                        arguments(2020, Month.JANUARY, DayOfWeek.MONDAY, 1,
+                                LocalDate.of(2020, Month.JANUARY, 6)),
+                        arguments(2020, Month.JANUARY, DayOfWeek.FRIDAY, -1,
+                                LocalDate.of(2020, Month.JANUARY, 31)),
+                        arguments(2020, Month.JANUARY, DayOfWeek.FRIDAY, -2,
+                                LocalDate.of(2020, Month.JANUARY, 24)),
+                        arguments(2020, Month.JANUARY, DayOfWeek.TUESDAY, -1,
+                                LocalDate.of(2020, Month.JANUARY, 28)),
+                        arguments(2020, Month.JANUARY, DayOfWeek.SUNDAY, -1,
+                                LocalDate.of(2020, Month.JANUARY, 26)),
+                        arguments(2020, Month.FEBRUARY, DayOfWeek.SUNDAY, -4,
+                                LocalDate.of(2020, Month.FEBRUARY, 2)));
+    }
+
     @ParameterizedTest
     @MethodSource
     void testGetPublicHolidays(int year, List<String> expected)
@@ -36,10 +71,10 @@ public class EnglandAndWalesPublicHolidayCalculatorTest
     static Stream<Arguments> testGetPublicHolidays()
     {
         return Stream
-                .of(expectedHolidays(1995, "2/1", "14/4", "17/4", "8/5", "29/5", "28/8",
-                        "25/12", "26/12"),
+                .of(expectedHolidays(1995, "2/1", "14/4", "17/4", "8/5", "29/5", "28/8", "25/12",
+                        "26/12"),
                         expectedHolidays(2002, "1/1", "29/3", "1/4", "6/5", "3/6", "4/6", "26/8",
-                        "25/12", "26/12"),
+                                "25/12", "26/12"),
                         expectedHolidays(2020, "1/1", "10/4", "13/4", "8/5", "25/5", "31/8",
                                 "25/12", "28/12"),
                         expectedHolidays(2021, "1/1", "2/4", "5/4", "3/5", "31/5", "30/8", "27/12",

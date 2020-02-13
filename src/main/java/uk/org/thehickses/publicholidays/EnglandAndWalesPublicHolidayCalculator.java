@@ -89,33 +89,24 @@ public class EnglandAndWalesPublicHolidayCalculator
         return answer;
     }
 
-    static LocalDate instanceOfDayInMonth(int no, DayOfWeek day, Month month, int year)
-    {
-        YearMonth yearMonth = YearMonth.of(year, month);
-        LocalDate answer = no > 0 ? yearMonth.atDay(1) : yearMonth.atEndOfMonth();
-        long increment = no > 0 ? 1 : -1;
-        for (int count = 1;; count++)
-        {
-            while (answer.getDayOfWeek() != day)
-                answer = answer.plusDays(increment);
-            if (count == Math.abs(no))
-                break;
-            answer = answer.plusDays(increment);
-        }
-        return answer;
-    }
-
     private static boolean isWeekend(TemporalAccessor date)
     {
         DayOfWeek day = DayOfWeek.of(date.get(ChronoField.DAY_OF_WEEK));
-        switch (day)
-        {
-        case SATURDAY:
-        case SUNDAY:
-            return true;
-        default:
-            return false;
-        }
+        return Stream.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).anyMatch(day::equals);
+    }
+
+    static LocalDate instanceOfDayInMonth(int no, DayOfWeek day, Month month, int year)
+    {
+        YearMonth yearMonth = YearMonth.of(year, month);
+        LocalDate firstOrLastDayOfMonth = no > 0 ? yearMonth.atDay(1) : yearMonth.atEndOfMonth();
+        int weekIncrement = no > 0 ? 7 : -7;
+        int differenceFromDay = day.getValue() - firstOrLastDayOfMonth.getDayOfWeek().getValue();
+        int adjustment = (differenceFromDay == 0 ? 0
+                : differenceFromDay + ((differenceFromDay >= 0) == (no >= 0) ? 0 : weekIncrement))
+                + (Math.abs(no) - 1) * weekIncrement;
+        if (adjustment == 0)
+            return firstOrLastDayOfMonth;
+        return firstOrLastDayOfMonth.plusDays(adjustment);
     }
 
     static LocalDate dateOfEaster(int year)
