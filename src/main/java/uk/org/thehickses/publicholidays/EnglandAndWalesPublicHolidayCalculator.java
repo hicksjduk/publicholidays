@@ -50,20 +50,20 @@ public class EnglandAndWalesPublicHolidayCalculator
         return d -> !exclusions.contains(d);
     }
 
-    private static final List<Exceptional> exceptions = Arrays
-            .asList(new Exceptional(1981, Month.JULY, 29, true),
-                    new Exceptional(instanceOfDayInMonth(1, DayOfWeek.MONDAY, Month.MAY, 1995),
+    private static final List<ExceptionToRule> exceptions = Arrays
+            .asList(new ExceptionToRule(1981, Month.JULY, 29, true),
+                    new ExceptionToRule(instanceOfDayInMonth(1, DayOfWeek.MONDAY, Month.MAY, 1995),
                             false),
-                    new Exceptional(1995, Month.MAY, 8, true),
-                    new Exceptional(1999, Month.DECEMBER, 31, true),
-                    new Exceptional(instanceOfDayInMonth(-1, DayOfWeek.MONDAY, Month.MAY, 2002),
+                    new ExceptionToRule(1995, Month.MAY, 8, true),
+                    new ExceptionToRule(1999, Month.DECEMBER, 31, true),
+                    new ExceptionToRule(instanceOfDayInMonth(-1, DayOfWeek.MONDAY, Month.MAY, 2002),
                             false),
-                    new Exceptional(2002, Month.JUNE, 3, true),
-                    new Exceptional(2002, Month.JUNE, 4, true),
-                    new Exceptional(2011, Month.APRIL, 29, true),
-                    new Exceptional(instanceOfDayInMonth(1, DayOfWeek.MONDAY, Month.MAY, 2020),
+                    new ExceptionToRule(2002, Month.JUNE, 3, true),
+                    new ExceptionToRule(2002, Month.JUNE, 4, true),
+                    new ExceptionToRule(2011, Month.APRIL, 29, true),
+                    new ExceptionToRule(instanceOfDayInMonth(1, DayOfWeek.MONDAY, Month.MAY, 2020),
                             false),
-                    new Exceptional(2020, Month.MAY, 8, true));
+                    new ExceptionToRule(2020, Month.MAY, 8, true));
 
     static LocalDate[] exceptions(int year, boolean isHoliday)
     {
@@ -104,8 +104,6 @@ public class EnglandAndWalesPublicHolidayCalculator
         int adjustment = (differenceFromDay == 0 ? 0
                 : differenceFromDay + ((differenceFromDay >= 0) == (no >= 0) ? 0 : weekIncrement))
                 + (Math.abs(no) - 1) * weekIncrement;
-        if (adjustment == 0)
-            return firstOrLastDayOfMonth;
         return firstOrLastDayOfMonth.plusDays(adjustment);
     }
 
@@ -128,18 +126,18 @@ public class EnglandAndWalesPublicHolidayCalculator
         return LocalDate.of(year, month, day);
     }
 
-    private static class Exceptional
+    private static class ExceptionToRule
     {
         public final LocalDate date;
         public final boolean isHoliday;
 
-        public Exceptional(LocalDate date, boolean isHoliday)
+        public ExceptionToRule(LocalDate date, boolean isHoliday)
         {
             this.date = date;
             this.isHoliday = isHoliday;
         }
 
-        public Exceptional(int year, Month month, int day, boolean isHoliday)
+        public ExceptionToRule(int year, Month month, int day, boolean isHoliday)
         {
             this(LocalDate.of(year, month, day), isHoliday);
         }
