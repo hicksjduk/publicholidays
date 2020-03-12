@@ -1,11 +1,11 @@
 package uk.org.thehickses.publicholidays;
 
+import static uk.org.thehickses.publicholidays.PublicHolidayExceptions.*;
+import static uk.org.thehickses.publicholidays.Utils.*;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
-import java.time.YearMonth;
-import java.time.temporal.ChronoField;
-import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
@@ -48,98 +48,5 @@ public class EnglandAndWalesPublicHolidayCalculator
     {
         List<LocalDate> exclusions = Arrays.asList(exceptions(year, false));
         return d -> !exclusions.contains(d);
-    }
-
-    private static final List<ExceptionToRule> exceptions = Arrays
-            .asList(new ExceptionToRule(1981, Month.JULY, 29, true),
-                    new ExceptionToRule(instanceOfDayInMonth(1, DayOfWeek.MONDAY, Month.MAY, 1995),
-                            false),
-                    new ExceptionToRule(1995, Month.MAY, 8, true),
-                    new ExceptionToRule(1999, Month.DECEMBER, 31, true),
-                    new ExceptionToRule(instanceOfDayInMonth(-1, DayOfWeek.MONDAY, Month.MAY, 2002),
-                            false),
-                    new ExceptionToRule(2002, Month.JUNE, 3, true),
-                    new ExceptionToRule(2002, Month.JUNE, 4, true),
-                    new ExceptionToRule(2011, Month.APRIL, 29, true),
-                    new ExceptionToRule(instanceOfDayInMonth(1, DayOfWeek.MONDAY, Month.MAY, 2020),
-                            false),
-                    new ExceptionToRule(2020, Month.MAY, 8, true));
-
-    static LocalDate[] exceptions(int year, boolean isHoliday)
-    {
-        return exceptions
-                .stream()
-                .filter(x -> x.isHoliday == isHoliday)
-                .map(x -> x.date)
-                .filter(d -> d.getYear() == year)
-                .toArray(LocalDate[]::new);
-    }
-
-    static LocalDate weekdayOnOrAfter(int no, int day, Month month, int year)
-    {
-        LocalDate answer = LocalDate.of(year, month, day);
-        for (int count = 1;; count++)
-        {
-            while (answer.query(EnglandAndWalesPublicHolidayCalculator::isWeekend))
-                answer = answer.plusDays(1);
-            if (count == no)
-                break;
-            answer = answer.plusDays(1);
-        }
-        return answer;
-    }
-
-    private static boolean isWeekend(TemporalAccessor date)
-    {
-        DayOfWeek day = DayOfWeek.of(date.get(ChronoField.DAY_OF_WEEK));
-        return Stream.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).anyMatch(day::equals);
-    }
-
-    static LocalDate instanceOfDayInMonth(int no, DayOfWeek day, Month month, int year)
-    {
-        YearMonth yearMonth = YearMonth.of(year, month);
-        LocalDate firstOrLastDayOfMonth = no > 0 ? yearMonth.atDay(1) : yearMonth.atEndOfMonth();
-        int weekIncrement = no > 0 ? 7 : -7;
-        int differenceFromDay = day.getValue() - firstOrLastDayOfMonth.getDayOfWeek().getValue();
-        int adjustment = (differenceFromDay == 0 ? 0
-                : differenceFromDay + ((differenceFromDay >= 0) == (no >= 0) ? 0 : weekIncrement))
-                + (Math.abs(no) - 1) * weekIncrement;
-        return firstOrLastDayOfMonth.plusDays(adjustment);
-    }
-
-    static LocalDate dateOfEaster(int year)
-    {
-        int positionInLunarCycle = year % 19;
-        int century = year / 100;
-        int positionInCentury = year % 100;
-        int centuryleapYearCycle = century / 4;
-        int positionInCenturyLeapYearCycle = century % 4;
-        int g = (8 * century + 13) / 25;
-        int h = (19 * positionInLunarCycle + century - centuryleapYearCycle - g + 15) % 30;
-        int m = (positionInLunarCycle + 11 * h) / 319;
-        int leapYearCycle = positionInCentury / 4;
-        int positionInLeapYearCycle = positionInCentury % 4;
-        int l = (2 * positionInCenturyLeapYearCycle + 2 * leapYearCycle - positionInLeapYearCycle
-                - h + m + 32) % 7;
-        int month = (h - m + l + 90) / 25;
-        int day = (h - m + l + month + 19) % 32;
-        return LocalDate.of(year, month, day);
-    }
-
-    private static class ExceptionToRule
-    {
-        public final LocalDate date;
-        public final boolean isHoliday;
-
-        public ExceptionToRule(LocalDate date, boolean isHoliday)
-        {
-            this.date = date;
-            this.isHoliday = isHoliday;
-        }
-
-        public ExceptionToRule(int year, Month month, int day, boolean isHoliday)
-        {
-            this(LocalDate.of(year, month, day), isHoliday);
-        }
     }
 }
