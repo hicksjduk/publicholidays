@@ -1,11 +1,13 @@
 package uk.org.thehickses.publicholidays;
 
 import static uk.org.thehickses.publicholidays.Utils.*;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class PublicHolidayExceptions
 {
@@ -27,8 +29,8 @@ public class PublicHolidayExceptions
                                     instanceOfDayInMonth(1, DayOfWeek.MONDAY, Month.MAY, 2020)),
                     exceptionalHoliday(LocalDate.of(2020, Month.MAY, 8)));
 
-    public final LocalDate date;
-    public final boolean isHoliday;
+    private final LocalDate date;
+    private final boolean isHoliday;
 
     private static PublicHolidayExceptions exceptionalNonHoliday(LocalDate date)
     {
@@ -46,13 +48,12 @@ public class PublicHolidayExceptions
         this.isHoliday = isHoliday;
     }
 
-    public static LocalDate[] exceptions(int year, boolean isHoliday)
+    public static Stream<LocalDate> exceptions(int year, boolean isHoliday)
     {
         return instances
                 .stream()
                 .filter(x -> x.isHoliday == isHoliday)
                 .map(x -> x.date)
-                .filter(d -> d.getYear() == year)
-                .toArray(LocalDate[]::new);
+                .filter(d -> d.getYear() == year);
     }
 }

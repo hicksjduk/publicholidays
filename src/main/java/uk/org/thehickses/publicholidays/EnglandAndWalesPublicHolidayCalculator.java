@@ -6,9 +6,9 @@ import static uk.org.thehickses.publicholidays.Utils.*;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -38,7 +38,7 @@ public class EnglandAndWalesPublicHolidayCalculator
                         instanceOfDayInMonth(-1, DayOfWeek.MONDAY, Month.AUGUST, year),
                         weekdayOnOrAfter(1, 25, Month.DECEMBER, year),
                         weekdayOnOrAfter(2, 25, Month.DECEMBER, year));
-        Stream<LocalDate> additionalHolidays = Stream.of(exceptions(year, true));
+        Stream<LocalDate> additionalHolidays = exceptions(year, true);
         return Stream
                 .concat(standardHolidays.filter(isNotExcluded(year)), additionalHolidays)
                 .sorted();
@@ -46,7 +46,7 @@ public class EnglandAndWalesPublicHolidayCalculator
 
     private Predicate<LocalDate> isNotExcluded(int year)
     {
-        List<LocalDate> exclusions = Arrays.asList(exceptions(year, false));
+        List<LocalDate> exclusions = exceptions(year, false).collect(Collectors.toList());
         return d -> !exclusions.contains(d);
     }
 }
