@@ -41,12 +41,6 @@ public class Utils
         return firstOrLastDayOfMonth.plusDays(adjustment);
     }
 
-    private static boolean isWeekend(TemporalAccessor date)
-    {
-        DayOfWeek day = DayOfWeek.of(date.get(ChronoField.DAY_OF_WEEK));
-        return Stream.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).anyMatch(day::equals);
-    }
-
     public static LocalDate weekdayOnOrAfter(int no, int day, Month month, int year)
     {
         LocalDate answer = LocalDate.of(year, month, day);
@@ -59,5 +53,11 @@ public class Utils
             answer = answer.plusDays(1);
         }
         return answer;
+    }
+
+    private static boolean isWeekend(TemporalAccessor date)
+    {
+        DayOfWeek day = DayOfWeek.of(date.get(ChronoField.DAY_OF_WEEK));
+        return Stream.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).anyMatch(day::equals);
     }
 }

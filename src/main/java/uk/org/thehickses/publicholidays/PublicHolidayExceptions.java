@@ -13,20 +13,17 @@ public class PublicHolidayExceptions
 {
     private static final List<PublicHolidayExceptions> instances = Arrays
             .asList(exceptionalHoliday(LocalDate.of(1981, Month.JULY, 29)),
-                    PublicHolidayExceptions
-                            .exceptionalNonHoliday(
-                                    instanceOfDayInMonth(1, DayOfWeek.MONDAY, Month.MAY, 1995)),
+                    exceptionalNonHoliday(
+                            instanceOfDayInMonth(1, DayOfWeek.MONDAY, Month.MAY, 1995)),
                     exceptionalHoliday(LocalDate.of(1995, Month.MAY, 8)),
                     exceptionalHoliday(LocalDate.of(1999, Month.DECEMBER, 31)),
-                    PublicHolidayExceptions
-                            .exceptionalNonHoliday(
-                                    instanceOfDayInMonth(-1, DayOfWeek.MONDAY, Month.MAY, 2002)),
+                    exceptionalNonHoliday(
+                            instanceOfDayInMonth(-1, DayOfWeek.MONDAY, Month.MAY, 2002)),
                     exceptionalHoliday(LocalDate.of(2002, Month.JUNE, 3)),
                     exceptionalHoliday(LocalDate.of(2002, Month.JUNE, 4)),
                     exceptionalHoliday(LocalDate.of(2011, Month.APRIL, 29)),
-                    PublicHolidayExceptions
-                            .exceptionalNonHoliday(
-                                    instanceOfDayInMonth(1, DayOfWeek.MONDAY, Month.MAY, 2020)),
+                    exceptionalNonHoliday(
+                            instanceOfDayInMonth(1, DayOfWeek.MONDAY, Month.MAY, 2020)),
                     exceptionalHoliday(LocalDate.of(2020, Month.MAY, 8)));
 
     private final LocalDate date;
